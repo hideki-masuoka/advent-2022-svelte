@@ -4,7 +4,7 @@
 
 **※注：これは、なぜかサンプルコードが付いてくる実録エッセイです。**
 
-![REPL](fig-00-repl.png)
+![REPL](https://raw.githubusercontent.com/hideki-masuoka/advent-2022-svelte/main/static/fig-00-repl.png)
 
 ## 概要
 
@@ -29,7 +29,7 @@ export const myMoney = writable();
 </p>
 ```
 
-![出力結果](fig-01-inconponent.png)
+![出力結果](https://raw.githubusercontent.com/hideki-masuoka/advent-2022-svelte/main/static/fig-01-incomponent.png)
 
 ## はぁ...修飾してぇ〜......
 
@@ -43,7 +43,7 @@ export const getMyMoneyUseDollar = () => {
 }
 ```
 
-![おっと、これは機能しない](fig-02-notdefined.png)
+![おっと、これは機能しない](https://raw.githubusercontent.com/hideki-masuoka/advent-2022-svelte/main/static/fig-02-notdefined.png)
 
 なにィ！！！ ば、バカな......
 
@@ -69,7 +69,7 @@ export const getMyMoneyUseSubscribe = () => {
 }
 ```
 
-![subscribeした](fig-03-subscribe.png)
+![subscribeした](https://raw.githubusercontent.com/hideki-masuoka/advent-2022-svelte/main/static/fig-03-subscribe.png)
 
 ヨシ！
 
@@ -83,7 +83,7 @@ export const getMyMoneyUseGet = () => {
 }
 ```
 
-![getした](fig-04-get.png)
+![getした](https://raw.githubusercontent.com/hideki-masuoka/advent-2022-svelte/main/static/fig-04-get.png)
 
 ヨシ！
 
@@ -100,13 +100,13 @@ export const getMyMoneyUseDerived = derived(
 );
 ```
 
-![実行結果](fig-05-derived.webp)
+![実行結果](https://raw.githubusercontent.com/hideki-masuoka/advent-2022-svelte/main/static/fig-05-derived.webp)
 
 やったぜ！！
 
 ## サンプルコード【REPL】
 
-![REPL](fig-00-repl.png)
+![REPL](https://raw.githubusercontent.com/hideki-masuoka/advent-2022-svelte/main/static/fig-00-repl.png)
 
 [SvelteのStoreにゃget()がある • REPL • Svelte](https://svelte.dev/repl/63473afec7c94dafb4b1a23d22588611?version=3.55.0)
 
