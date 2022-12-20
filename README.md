@@ -20,7 +20,7 @@ import {writable} from 'svelte/store';
 export const myMoney = writable();
 ```
 
-別のコンポーネント内では$接頭辞を付けて$myMoneyという形で呼び出して、リアクティブな状態で使用する事ができます。
+別のコンポーネント内では$接頭辞を付けて $myMoneyという形で呼び出して、リアクティブな状態で使用する事ができます。
 
 ```html
 <h2>このコンポーネント内でStoreを呼ぶ</h2>
