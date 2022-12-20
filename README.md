@@ -1,107 +1,129 @@
-# This repo is no longer maintained. Consider using `npm init vite` and selecting the `svelte` option or  if you want a full-fledged app framework and don't mind using pre-1.0 software  use [SvelteKit](https://kit.svelte.dev), the official application framework for Svelte.
+# SvelteのStoreにゃget()がある
 
----
+この記事は[Svelteのカレンダー | Advent Calendar 2022 - Qiita](https://qiita.com/advent-calendar/2022/svelte)の21日目となる投稿です。
 
-# svelte app
+**※注：これは、なぜかサンプルコードが付いてくる実録エッセイです。**
 
-This is a project template for [Svelte](https://svelte.dev) apps. It lives at https://github.com/sveltejs/template.
+![REPL](fig-00-repl.png)
 
-To create a new project based on this template using [degit](https://github.com/Rich-Harris/degit):
+## 概要
 
-```bash
-npx degit sveltejs/template svelte-app
-cd svelte-app
+SvelteのStore機能にはgetという関数があってな...というお話をします。
+
+SvelteはStoreという機能を使って、コンポーネント間で何かいい感じに値を活用できるという仕組みが用意されています。
+
+例えば、Store.jsというファイルに下記のような感じでmyMoneyというStoreを定義すると、、、
+
+```javascript
+import {writable} from 'svelte/store';
+
+export const myMoney = writable();
 ```
 
-*Note that you will need to have [Node.js](https://nodejs.org) installed.*
+別のコンポーネント内では$接頭辞を付けて$myMoneyという形で呼び出して、リアクティブな状態で使用する事ができます。
 
-
-## Get started
-
-Install the dependencies...
-
-```bash
-cd svelte-app
-npm install
+```html
+<h2>このコンポーネント内でStoreを呼ぶ</h2>
+<p class="dekaimoji">
+	I have {$myMoney}
+</p>
 ```
 
-...then start [Rollup](https://rollupjs.org):
+![出力結果](fig-01-inconponent.png)
 
-```bash
-npm run dev
+## はぁ...修飾してぇ〜......
+
+ということで、記事進行の都合上、ここらへんでいっちょmyMoneyを修飾した値を取得したくなりました。
+  
+$接頭辞とても便利！ Store.jsでmyMoneyを定義しつつ、修飾した値も返していくぞ！
+
+```javascript
+export const getMyMoneyUseDollar = () => {
+	return $myMoney + suffix;
+}
 ```
 
-Navigate to [localhost:8080](http://localhost:8080). You should see your app running. Edit a component file in `src`, save it, and reload the page to see your changes.
+![おっと、これは機能しない](fig-02-notdefined.png)
 
-By default, the server will only respond to requests from localhost. To allow connections from other computers, edit the `sirv` commands in package.json to include the option `--host 0.0.0.0`.
+なにィ！！！ ば、バカな......
 
-If you're using [Visual Studio Code](https://code.visualstudio.com/) we recommend installing the official extension [Svelte for VS Code](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode). If you are using other editors you may need to install a plugin in order to get syntax highlighting and intellisense.
+## get()があるよ
 
-## Building and running in production mode
+この記事は12月21日公開予定の記事なのですが、現在、20日の午後23時53分を過ぎたところです。そういった事情も踏まえまして、全てを割愛して説明しますと、
 
-To create an optimised version of the app:
+「ここでは$接頭辞を付けてStoreを呼び出せないんじゃ。残念じゃったの...」
 
-```bash
-npm run build
+### どうにかする
+
+どうにかしましょう。
+
+### Case.1 subscribeする
+
+Storeの持つ、本来の機能subscribeを使います。
+
+```javascript
+export const getMyMoneyUseSubscribe = () => {
+	let money;
+	myMoney.subscribe(value => { money = value });
+	return money + suffix;
+}
 ```
 
-You can run the newly built app with `npm run start`. This uses [sirv](https://github.com/lukeed/sirv), which is included in your package.json's `dependencies` so that the app will work when you deploy to platforms like [Heroku](https://heroku.com).
+![subscribeした](fig-03-subscribe.png)
 
+ヨシ！
 
-## Single-page app mode
+### Case.2 get（）する
 
-By default, sirv will only respond to requests that match files in `public`. This is to maximise compatibility with static fileservers, allowing you to deploy your app anywhere.
+というか、なんか、実はgetが用意されていました。 知らんかった...
 
-If you're building a single-page app (SPA) with multiple routes, sirv needs to be able to respond to requests for *any* path. You can make it so by editing the `"start"` command in package.json:
-
-```js
-"start": "sirv public --single"
+```javascript
+export const getMyMoneyUseGet = () => {
+	return get(myMoney) + suffix;
+}
 ```
 
-## Using TypeScript
+![getした](fig-04-get.png)
 
-This template comes with a script to set up a TypeScript development environment, you can run it immediately after cloning the template with:
+ヨシ！
 
-```bash
-node scripts/setupTypeScript.js
+### Case.3 derivedする
+
+というか、なんか、実は今回の例のような場合では値げｔ^^v とかしなくても、derivedというStoreを派生させる機能が用意されていました。 知らんかった...
+
+というか、なんか、本当は知っていたけどドキュメントを読んでも使いどころがピンときてなくて今回実際に試してみて初めて実感した驚きの「あっ、getあったけどgetせんでもええやんけ」でした。
+
+```javascript
+export const getMyMoneyUseDerived = derived(
+  myMoney,
+  $myMoney => { return $myMoney + suffix }
+);
 ```
 
-Or remove the script via:
+![実行結果](fig-05-derived.webp)
 
-```bash
-rm scripts/setupTypeScript.js
-```
+やったぜ！！
 
-If you want to use `baseUrl` or `path` aliases within your `tsconfig`, you need to set up `@rollup/plugin-alias` to tell Rollup to resolve the aliases. For more info, see [this StackOverflow question](https://stackoverflow.com/questions/63427935/setup-tsconfig-path-in-svelte).
+## サンプルコード【REPL】
 
-## Deploying to the web
+![REPL](fig-00-repl.png)
 
-### With [Vercel](https://vercel.com)
+[SvelteのStoreにゃget()がある • REPL • Svelte](https://svelte.dev/repl/63473afec7c94dafb4b1a23d22588611?version=3.55.0)
 
-Install `vercel` if you haven't already:
 
-```bash
-npm install -g vercel
-```
+## まとめ
 
-Then, from within your project folder:
+今回、Storeの値を直接ゲットしたいという湧き上がる衝動と、実はStoreにはget()が用意されていたという事実の発見により、本稿に取り掛かりましたがサンプルコードを書き進めていく過程で、ああ、get、ああ、、、となりました。  
 
-```bash
-cd public
-vercel deploy --name my-project
-```
+Svelteには便利なREPLがあるので、もっと練習しましょう。という結論になります。【完】
 
-### With [surge](https://surge.sh/)
+### 参考文献
 
-Install `surge` if you haven't already:
+> [svelte/store | Docs • Svelte](https://svelte.jp/docs#run-time-svelte-store)
 
-```bash
-npm install -g surge
-```
+> [Stores / Derived stores • Svelte Tutorial](https://svelte.jp/tutorial/derived-stores)
 
-Then, from within your project folder:
+### Next
 
-```bash
-npm run build
-surge public my-project.surge.sh
-```
+明日のSvelte Advent Calendar 2022は...<br>
+[Svelteのカレンダー | Advent Calendar 2022 - Qiita](https://qiita.com/advent-calendar/2022/svelte)
